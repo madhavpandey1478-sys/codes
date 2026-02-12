@@ -1,0 +1,33 @@
+.container
+{
+    display:flex;
+    gap:20px;
+    font-family:Arial;
+}
+
+.panel
+{
+    width:200px;
+    border:1px solid #ccc;
+    padding:10px;
+}
+
+.dimension
+{
+    padding:8px;
+    margin:5px;
+    background:#f0f0f0;
+    cursor:grab;
+}
+
+.dimension:hover
+{
+    background:#ddd;
+}
+
+.dropzone
+{
+    min-height:150px;
+    border:2px dashed #aaa;
+    padding:10px;
+}
