@@ -1,107 +1,165 @@
 (function(){
 
-class DragDropPivot extends HTMLElement
+class PivotPanel extends HTMLElement
 {
 
 constructor()
 {
     super();
 
-    this._shadowRoot = this.attachShadow({mode:"open"});
+    this.layout =
+    {
+        columns: [],
+        measures: [],
+        available: [],
+        rows: []
+    };
 
 }
 
 connectedCallback()
 {
+    this.init();
+}
 
-    this.loadUI();
+init()
+{
+
+    const dims =
+    this.getAttribute("dimensions") || "";
+
+    const meas =
+    this.getAttribute("measures") || "";
+
+    if(dims !== "")
+    this.layout.available = dims.split(",");
+
+    if(meas !== "")
+    this.layout.measures = meas.split(",");
+
+    this.render();
+
+    this.setupDropZones();
 
 }
 
-loadUI()
+render()
 {
 
-    const dimensions =
-    this.getAttribute("dimensions") ||
-    "GL_ACCOUNT,COMPANY,COSTCENTER,DATE";
+    this.renderZone("columns");
+    this.renderZone("measures");
+    this.renderZone("available");
+    this.renderZone("rows");
 
-    const dimArray = dimensions.split(",");
+}
 
-    const list =
-    this.shadowRoot.getElementById("dimensionList");
+renderZone(zone)
+{
 
-    dimArray.forEach(dim =>
+    const container =
+    document.getElementById(zone);
+
+    container.innerHTML = "";
+
+    this.layout[zone].forEach(item =>
     {
 
         const div =
         document.createElement("div");
 
-        div.innerText = dim;
+        div.className = "item";
 
-        div.className = "dimension";
+        div.innerText = item;
 
         div.draggable = true;
 
-        div.dataset.dimension = dim;
+        div.dataset.value = item;
+        div.dataset.zone = zone;
 
         div.addEventListener("dragstart",
         e =>
         {
 
             e.dataTransfer.setData(
-            "dimension",
-            dim
-            );
+            "value",
+            item);
+
+            e.dataTransfer.setData(
+            "from",
+            zone);
 
         });
 
-        list.appendChild(div);
+        container.appendChild(div);
 
     });
-
-    this.setupDropZone("rowZone","ROWS");
-
-    this.setupDropZone("colZone","COLUMNS");
 
 }
 
-setupDropZone(zoneId,axis)
+setupDropZones()
 {
 
-    const zone =
-    this.shadowRoot.getElementById(zoneId);
-
-    zone.addEventListener("dragover",
-    e => e.preventDefault());
-
-    zone.addEventListener("drop",
-    e =>
+    ["columns","measures","available","rows"]
+    .forEach(zone =>
     {
 
-        e.preventDefault();
+        const element =
+        document.getElementById(zone);
 
-        const dimension =
-        e.dataTransfer.getData("dimension");
+        element.addEventListener("dragover",
+        e => e.preventDefault());
 
-        this.dispatchEvent(
-        new CustomEvent(
-        "onDrop",
+        element.addEventListener("drop",
+        e =>
         {
-            detail:
-            {
-                dimension:dimension,
-                axis:axis
-            }
-        }));
+
+            e.preventDefault();
+
+            const value =
+            e.dataTransfer.getData("value");
+
+            const from =
+            e.dataTransfer.getData("from");
+
+            this.moveItem(value, from, zone);
+
+        });
 
     });
+
+}
+
+moveItem(value, from, to)
+{
+
+    if(from === to) return;
+
+    const fromArr = this.layout[from];
+    const toArr = this.layout[to];
+
+    const index = fromArr.indexOf(value);
+
+    if(index > -1)
+    fromArr.splice(index,1);
+
+    if(toArr.indexOf(value) === -1)
+    toArr.push(value);
+
+    this.render();
+
+    this.dispatchEvent(
+    new CustomEvent(
+    "onLayoutChange",
+    {
+        detail: this.layout
+    }));
 
 }
 
 }
 
 customElements.define(
-"com-madhav-dragdroppivot",
-DragDropPivot);
+"com-madhav-pivotpanel",
+PivotPanel);
 
 })();
