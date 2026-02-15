@@ -1,13 +1,13 @@
 {
-  "id": "com.madhav.dragdroppivot",
-  "name": "Drag Drop Pivot Panel",
-  "description": "Drag and drop dimensions to rows and columns",
+  "id": "com.madhav.pivotpanel",
+  "name": "Pivot Panel Widget",
+  "description": "Drag Drop Pivot Panel",
   "version": "1.0.0",
-  "newInstancePrefix": "DragDropPivot",
+  "newInstancePrefix": "PivotPanel",
   "webcomponents": [
     {
       "kind": "main",
-      "tag": "com-madhav-dragdroppivot",
+      "tag": "com-madhav-pivotpanel",
       "url": "index.html",
       "integrity": ""
     }
@@ -15,12 +15,16 @@
   "properties": {
     "dimensions": {
       "type": "string",
-      "default": "GL_ACCOUNT,COMPANY,COSTCENTER,DATE"
+      "default": ""
+    },
+    "measures": {
+      "type": "string",
+      "default": ""
     }
   },
   "events": {
-    "onDrop": {
-      "description": "Triggered when dimension dropped"
+    "onLayoutChange": {
+      "description": "Triggered when layout changes"
     }
   }
 }
