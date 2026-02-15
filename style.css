@@ -1,33 +1,36 @@
+body
+{
+    font-family: Arial;
+}
+
 .container
 {
-    display:flex;
-    gap:20px;
-    font-family:Arial;
+    width: 250px;
 }
 
-.panel
+.zone
 {
-    width:200px;
-    border:1px solid #ccc;
-    padding:10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
 }
 
-.dimension
+.title
 {
-    padding:8px;
-    margin:5px;
-    background:#f0f0f0;
-    cursor:grab;
-}
-
-.dimension:hover
-{
-    background:#ddd;
+    background: #f0f0f0;
+    padding: 5px;
+    font-weight: bold;
 }
 
 .dropzone
 {
-    min-height:150px;
-    border:2px dashed #aaa;
-    padding:10px;
+    min-height: 100px;
+    padding: 5px;
+}
+
+.item
+{
+    background: #e0e0e0;
+    margin: 4px;
+    padding: 6px;
+    cursor: grab;
 }
